@@ -14,7 +14,8 @@ Algorithm is simple as:
   state[1] = state[2];
   ...
   state[N-2] = state[N-1];
-  state[N-1] = t ^ (t << A) ^ (t >> B) ^ state[N-1] ^ (state[N-1] >> C);
+  t ^= t << A;
+  state[N-1] = t ^ (t >> B) ^ state[N-1] ^ (state[N-1] >> C);
 ````
 
 Original xorshift [site](http://xoroshiro.di.unimi.it/) and
