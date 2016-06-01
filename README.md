@@ -76,6 +76,14 @@ So the code is
   state[N-1] = p ^ q;
 ```
 
+Looks like, with presence of loop unrolling, compilators are less smart
+in optimizing this permutation.
+(in other words, if you generate 4 random numbers at once, gcc is able
+to optimize standard permutation, but sucks at optimizing this one).
+
+On the other hand, this permutation may escapes from zero faster (with certain
+shift tripples), and does more permutations of current value.
+
 LICENSE
 =======
 
