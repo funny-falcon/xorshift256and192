@@ -5,18 +5,21 @@ Xorshift is a simple and fast high quality random generator.
 
 Algorithm is simple as:
 
-````
+```
   const A,B,C; // shift values
   intx_t state[N]; // state
-  intx_t t;
-  t = state[0];
+  intx_t p, q;
+  p = state[0];
   state[0] = state[1];
   state[1] = state[2];
   ...
   state[N-2] = state[N-1];
-  t ^= t << A;
-  state[N-1] = t ^ (t >> B) ^ state[N-1] ^ (state[N-1] >> C);
-````
+  q = state[N-1];
+  p ^= p << A;
+  p ^= p >> B;
+  q ^= q >> C;
+  state[N-1] = p ^ q;
+```
 
 Original xorshift [site](http://xoroshiro.di.unimi.it/) and
 [tarball](http://xoroshiro.di.unimi.it/xorshift-1.2.tgz) misses calculations for
@@ -31,6 +34,47 @@ So you can find here all A,B,C tripples which produces full period
 generators
 
 (at the moment, i didn't run statistical tests, so no recomendation for "best tripple")
+
+XorshiftMX note:
+==========
+
+Folders `256shift64` and `192shift64` is for classic xorshift permutation
+with code above and produced by matrix (for 256bit case):
+
+```
+ 0 0 0 (I+L^a)(I+R^b)
+ 1 0 0 0
+ 0 1 0 0
+ 0 0 1 (I+R^c)
+```
+
+Folder `256shift64mx` is for alternative permutation, produced by matrix
+
+
+```
+ 0 0 0 (I+R^c)
+ 1 0 0 0
+ 0 1 0 0
+ 0 0 1 (I+L^a)(I+R^b)
+```
+
+So the code is
+
+```
+  const A,B,C; // shift values
+  intx_t state[N]; // state
+  intx_t p, q;
+  p = state[0];
+  state[0] = state[1];
+  state[1] = state[2];
+  ...
+  state[N-2] = state[N-1];
+  q = state[N-1];
+  q ^= q >> A; // here is different
+  q ^= q << B;
+  p ^= p >> C;
+  state[N-1] = p ^ q;
+```
 
 LICENSE
 =======
